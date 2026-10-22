@@ -212,53 +212,73 @@ body{padding-bottom:72px}
     button.addEventListener('click', function(){ selectPackage(button.dataset.package); });
   });
   const orderForm = document.getElementById('orderForm');
+  const responseFrame = document.getElementById('orderResponseFrame');
   let orderSubmitting = false;
   let purchaseSentForOrder = false;
+  let selectedPackageAtSubmit = '';
 
   orderForm.addEventListener('submit', function(e){
     if(!packageInput.value){
       e.preventDefault();
-      if(formMessage) { formMessage.className = 'notice error'; formMessage.textContent = 'يرجى اختيار الباقة أولاً.'; }
+      if(formMessage) {
+        formMessage.className = 'notice error';
+        formMessage.textContent = 'يرجى اختيار الباقة أولاً.';
+      }
       document.getElementById('packages').scrollIntoView({behavior:'smooth'});
       return;
     }
+
     orderSubmitting = true;
     purchaseSentForOrder = false;
+    selectedPackageAtSubmit = packageInput.value;
+
     const submitButton = orderForm.querySelector('button[type="submit"]');
     if(submitButton) submitButton.disabled = true;
-    if(formMessage) { formMessage.className = 'notice pending'; formMessage.textContent = 'جارٍ إرسال طلبك... يرجى الانتظار.'; }
+    if(formMessage) {
+      formMessage.className = 'notice pending';
+      formMessage.textContent = 'جارٍ إرسال طلبك... يرجى الانتظار.';
+    }
   });
 
-  // Purchase fires only after the Apps Script backend confirms the order was saved.
-  // The Apps Script endpoint must send the matching postMessage on success/failure.
+  // Do not infer success from iframe load. The Apps Script must send a success message.
+  responseFrame.addEventListener('load', function(){
+    if(!orderSubmitting) return;
+    if(formMessage) {
+      formMessage.className = 'notice pending';
+      formMessage.textContent = 'تم إرسال الطلب إلى النظام. إذا لم تظهر رسالة التأكيد، يرجى التواصل مع الدعم لتأكيد الاستلام.';
+    }
+    const submitButton = orderForm.querySelector('button[type="submit"]');
+    if(submitButton) submitButton.disabled = false;
+    orderSubmitting = false;
+  });
+
   window.addEventListener('message', function(event){
-    // Trust messages only from the hidden iframe that submitted this order.
-    // Apps Script may use a redirected or opaque origin, so origin-string
-    // matching can incorrectly discard a valid response.
     if(!responseFrame || event.source !== responseFrame.contentWindow) return;
 
     let data = event.data;
-    // Accept either an object or a JSON string from the Apps Script response.
     if(typeof data === 'string'){
       try { data = JSON.parse(data); } catch (error) { return; }
     }
-    if(!data || data.type !== 'prostavibe-order-result' || !orderSubmitting) return;
+    if(!data || data.type !== 'prostavibe-order-result') return;
 
-    orderSubmitting = false;
     const submitButton = orderForm.querySelector('button[type="submit"]');
-    if(submitButton) submitButton.disabled = false;
-
     if(data.success === true){
-      if(formMessage) { formMessage.className = 'notice success'; formMessage.textContent = 'تم استلام طلبك بنجاح! سنتواصل معك لتأكيد التفاصيل.'; }
-      if(submitButton) submitButton.textContent = 'تم إرسال الطلب ✓';
+      orderSubmitting = false;
+      if(submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = 'تم إرسال الطلب ✓';
+      }
+      if(formMessage) {
+        formMessage.className = 'notice success';
+        formMessage.textContent = 'تم استلام طلبك بنجاح! سنتواصل معك لتأكيد التفاصيل.';
+      }
 
       if(!purchaseSentForOrder && typeof window.fbq === 'function'){
-        const selectedPackage = packageInput.value;
-        const purchaseValue = selectedPackage === '3-pack' ? 129 : 199;
+        const purchaseValue = selectedPackageAtSubmit === '3-pack' ? 129 : 199;
         window.fbq('track', 'Purchase', {
           value: purchaseValue,
           currency: 'SAR',
-          content_name: selectedPackage,
+          content_name: selectedPackageAtSubmit,
           content_type: 'product'
         });
         purchaseSentForOrder = true;
@@ -271,9 +291,16 @@ body{padding-bottom:72px}
         button.setAttribute('aria-pressed', 'false');
       });
       if(formMessage) formMessage.scrollIntoView({behavior:'smooth', block:'center'});
-      window.setTimeout(function(){ if(submitButton) submitButton.textContent = 'تأكيد الطلب / Confirm order'; }, 5000);
-    } else {
-      if(formMessage) { formMessage.className = 'notice error'; formMessage.textContent = 'تعذر إرسال الطلب. يرجى المحاولة مرة أخرى.'; }
+      window.setTimeout(function(){
+        if(submitButton) submitButton.textContent = 'تأكيد الطلب / Confirm order';
+      }, 5000);
+    } else if(data.success === false) {
+      orderSubmitting = false;
+      if(submitButton) submitButton.disabled = false;
+      if(formMessage) {
+        formMessage.className = 'notice error';
+        formMessage.textContent = 'تعذر إرسال الطلب. يرجى المحاولة مرة أخرى.';
+      }
     }
   });
 })();
