@@ -232,8 +232,16 @@ body{padding-bottom:72px}
   // Purchase fires only after the Apps Script backend confirms the order was saved.
   // The Apps Script endpoint must send the matching postMessage on success/failure.
   window.addEventListener('message', function(event){
-    if(event.origin !== 'https://script.google.com' &&
-       event.origin !== 'https://script.googleusercontent.com') return;
+    let senderHost = '';
+    try {
+      senderHost = new URL(event.origin).hostname;
+    } catch (error) {
+      return;
+    }
+    // Apps Script HTML responses may be served from a generated
+    // *.googleusercontent.com host after redirect.
+    if(senderHost !== 'script.google.com' &&
+       !senderHost.endsWith('.googleusercontent.com')) return;
     const data = event.data;
     if(!data || data.type !== 'prostavibe-order-result' || !orderSubmitting) return;
 
