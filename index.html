@@ -21,7 +21,7 @@ body{margin:0;background:var(--bg);color:var(--cream);font-family:Arial,Tahoma,s
 .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .formgrid input,.formgrid select{width:100%;padding:13px;border:1px solid #c9c4b8;border-radius:9px;font:inherit;background:#fff;color:#171713}
 .formgrid .full{grid-column:1/-1}.btn{width:100%;background:#d5ad54;border:0;border-radius:10px;padding:14px;font-size:17px;font-weight:800;cursor:pointer}
-.notice{font-size:12px;color:#777;text-align:center;margin:12px 0 0}
+.notice{font-size:14px;color:#56534b;text-align:center;margin:12px 0 0;padding:12px;border-radius:10px;line-height:1.7}.notice.success{display:block;background:#e5f5e9;border:1px solid #248344;color:#14532d;font-weight:800;font-size:16px}.notice.pending{display:block;background:#fff5d6;border:1px solid #d5ad54;color:#5f4610;font-weight:700}.notice.error{display:block;background:#fde8e7;border:1px solid #b42318;color:#912018;font-weight:700}
 .pharmacy{background:#111612;border:1px solid #40331d;border-radius:16px;padding:18px;margin:26px auto;text-align:center}
 .pharmacy h2{color:var(--gold);margin:0 0 10px}
 .pharmacy img{display:block;width:100%;height:auto;border-radius:12px;margin:0 auto 14px}
@@ -167,7 +167,7 @@ body{padding-bottom:72px}
     <input type="hidden" name="package" id="selectedPackage" required>
     <button class="btn full" type="submit">تأكيد الطلب / Confirm order</button>
   </div>
-  <p class="notice" id="formMessage">اختر الباقة ثم أدخل بيانات التوصيل.</p>
+  <p class="notice" id="formMessage" role="status" aria-live="polite">اختر الباقة ثم أدخل بيانات التوصيل.</p>
 </form>
 <iframe name="orderResponseFrame" id="orderResponseFrame" title="Order submission response" style="display:none;width:0;height:0;border:0" aria-hidden="true"></iframe>
 </section></main>
@@ -184,9 +184,9 @@ body{padding-bottom:72px}
       button.classList.toggle('selected', selected);
       button.setAttribute('aria-pressed', selected ? 'true' : 'false');
     });
-    if(formMessage) formMessage.textContent = value === '3-pack'
+    if(formMessage) { formMessage.className = 'notice'; formMessage.textContent = value === '3-pack'
       ? 'تم اختيار باقة 3 قطع — 129 SAR'
-      : 'تم اختيار باقة 5 قطع — 199 SAR';
+      : 'تم اختيار باقة 5 قطع — 199 SAR'; }
   }
   packageButtons.forEach(function(button){
     button.addEventListener('click', function(){ selectPackage(button.dataset.package); });
@@ -198,14 +198,14 @@ body{padding-bottom:72px}
   orderForm.addEventListener('submit', function(e){
     if(!packageInput.value){
       e.preventDefault();
-      if(formMessage) formMessage.textContent = 'يرجى اختيار الباقة أولاً.';
+      if(formMessage) { formMessage.className = 'notice error'; formMessage.textContent = 'يرجى اختيار الباقة أولاً.'; }
       document.getElementById('packages').scrollIntoView({behavior:'smooth'});
       return;
     }
     orderSubmitting = true;
     const submitButton = orderForm.querySelector('button[type="submit"]');
     if(submitButton) submitButton.disabled = true;
-    if(formMessage) formMessage.textContent = 'جارٍ إرسال طلبك... يرجى الانتظار.';
+    if(formMessage) { formMessage.className = 'notice pending'; formMessage.textContent = 'جارٍ إرسال طلبك... يرجى الانتظار.'; }
   });
 
   responseFrame.addEventListener('load', function(){
@@ -213,13 +213,16 @@ body{padding-bottom:72px}
     orderSubmitting = false;
     const submitButton = orderForm.querySelector('button[type="submit"]');
     if(submitButton) submitButton.disabled = false;
-    if(formMessage) formMessage.textContent = 'تم إرسال الطلب إلى نظام الاستقبال. يرجى التحقق من جدول Orders للتأكد من تسجيله.';
+    if(formMessage) { formMessage.className = 'notice success'; formMessage.textContent = 'تم استلام طلبك بنجاح! سنتواصل معك لتأكيد التفاصيل.'; }
+    if(submitButton) submitButton.textContent = 'تم إرسال الطلب ✓';
     orderForm.reset();
     packageInput.value = '';
     packageButtons.forEach(function(button){
       button.classList.remove('selected');
       button.setAttribute('aria-pressed', 'false');
     });
+    if(formMessage) formMessage.scrollIntoView({behavior:'smooth', block:'center'});
+    window.setTimeout(function(){ if(submitButton) submitButton.textContent = 'تأكيد الطلب / Confirm order'; }, 5000);
   });
 })();
 </script>
