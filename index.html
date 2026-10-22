@@ -21,7 +21,12 @@ body{margin:0;background:var(--bg);color:var(--cream);font-family:Arial,Tahoma,s
 .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .formgrid input,.formgrid select{width:100%;padding:13px;border:1px solid #c9c4b8;border-radius:9px;font:inherit;background:#fff;color:#171713}
 .formgrid .full{grid-column:1/-1}.btn{width:100%;background:#d5ad54;border:0;border-radius:10px;padding:14px;font-size:17px;font-weight:800;cursor:pointer}
-.notice{font-size:12px;color:#777;text-align:center;margin:12px 0 0}footer{text-align:center;color:#9d9e96;font-size:12px;padding:20px 0 35px}
+.notice{font-size:12px;color:#777;text-align:center;margin:12px 0 0}
+.pharmacy{background:#111612;border:1px solid #40331d;border-radius:16px;padding:18px;margin:26px auto;text-align:center}
+.pharmacy h2{color:var(--gold);margin:0 0 10px}
+.pharmacy img{display:block;width:100%;height:auto;border-radius:12px;margin:0 auto 14px}
+.pharmacy p{color:var(--muted);margin:8px 0}
+footer{text-align:center;color:#9d9e96;font-size:12px;padding:20px 0 35px}
 @media(max-width:560px){.packages,.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.order{padding:22px 14px}.media video,.media img{border-radius:10px;margin-bottom:12px}}
 </style>
 </head>
@@ -32,14 +37,13 @@ body{margin:0;background:var(--bg);color:var(--cream);font-family:Arial,Tahoma,s
 <video controls playsinline preload="metadata">
 <source src="product-video.mp4" type="video/mp4">متصفحك لا يدعم تشغيل الفيديو.</video>
 
-<!-- Original images (banana comparison and anatomy comparison removed as requested) -->
+<!-- Product images -->
 <img src="03-prostate-benefits.jpg" alt="إنفوغرافيك توضيحي عن صحة البروستاتا" loading="lazy">
 <img src="04-product-benefits.jpg" alt="صورة توضيحية للمنتج" loading="lazy">
 <img src="05-water-flow-comparison.jpg" alt="رسم توضيحي للمقارنة" loading="lazy">
 <img src="06-couple-visual.jpg" alt="صورة توضيحية" loading="lazy">
-<img src="07-pharmacy.jpg" alt="صورة صيدلية" loading="lazy">
 
-<!-- Additional uploaded images; filenames must match GitHub exactly -->
+<!-- Additional uploaded images -->
 <img src="ChatGPT%20Image%20Oct%2022%2C%202026%2C%2007_01_16%20AM.jpg" alt="صورة توضيحية للمنتج" loading="lazy">
 <img src="ChatGPT%20Image%20Oct%2022%2C%202026%2C%2007_01_34%20AM.jpg" alt="رسم تشريحي توضيحي" loading="lazy">
 <img src="ChatGPT%20Image%20Oct%2022%2C%202026%2C%2007_01_48%20AM.jpg" alt="معلومات توضيحية عن المنتج" loading="lazy">
@@ -49,6 +53,14 @@ body{margin:0;background:var(--bg);color:var(--cream);font-family:Arial,Tahoma,s
 <img src="ChatGPT%20Image%20Oct%2022%2C%202026%2C%2007_02_37%20AM.jpg" alt="صورة صيدلية" loading="lazy">
 <img src="ChatGPT%20Image%20Oct%2022%2C%202026%2C%2007_02_49%20AM.png" alt="عبوة المنتج" loading="lazy">
 <img src="ChatGPT%20Image%20Oct%2022%2C%202026%2C%2007_03_00%20AM.jpg" alt="صورة أخرى للمنتج" loading="lazy">
+</section>
+
+<!-- Pharmacy section moved below ALL product images -->
+<section class="pharmacy" id="pharmacy">
+<h2>معلومات الصيدلية</h2>
+<img src="07-pharmacy.jpg" alt="صورة الصيدلية" loading="lazy">
+<p>يرجى التحقق من معلومات الصيدلية وتفاصيل المنتج قبل الطلب.</p>
+<p>استخدم المنتج وفقًا لتعليمات العبوة والشركة المصنّعة.</p>
 </section>
 
 <section class="order" id="packages">
