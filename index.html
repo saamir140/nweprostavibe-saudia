@@ -14,11 +14,11 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1882882473086426');
+fbq('init', '1467176495334045');
 fbq('track', 'PageView');
 </script>
 <noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1882882473086426&ev=PageView&noscript=1"
+src="https://www.facebook.com/tr?id=1467176495334045&ev=PageView&noscript=1"
 alt="" /></noscript>
 <title>ProstaVibe | السعودية</title>
 <style>
@@ -212,8 +212,8 @@ body{padding-bottom:72px}
     button.addEventListener('click', function(){ selectPackage(button.dataset.package); });
   });
   const orderForm = document.getElementById('orderForm');
-  const responseFrame = document.getElementById('orderResponseFrame');
   let orderSubmitting = false;
+  let purchaseSentForOrder = false;
 
   orderForm.addEventListener('submit', function(e){
     if(!packageInput.value){
@@ -223,26 +223,51 @@ body{padding-bottom:72px}
       return;
     }
     orderSubmitting = true;
+    purchaseSentForOrder = false;
     const submitButton = orderForm.querySelector('button[type="submit"]');
     if(submitButton) submitButton.disabled = true;
     if(formMessage) { formMessage.className = 'notice pending'; formMessage.textContent = 'جارٍ إرسال طلبك... يرجى الانتظار.'; }
   });
 
-  responseFrame.addEventListener('load', function(){
-    if(!orderSubmitting) return;
+  // Purchase fires only after the Apps Script backend confirms the order was saved.
+  // The Apps Script endpoint must send the matching postMessage on success/failure.
+  window.addEventListener('message', function(event){
+    if(event.origin !== 'https://script.google.com' &&
+       event.origin !== 'https://script.googleusercontent.com') return;
+    const data = event.data;
+    if(!data || data.type !== 'prostavibe-order-result' || !orderSubmitting) return;
+
     orderSubmitting = false;
     const submitButton = orderForm.querySelector('button[type="submit"]');
     if(submitButton) submitButton.disabled = false;
-    if(formMessage) { formMessage.className = 'notice success'; formMessage.textContent = 'تم استلام طلبك بنجاح! سنتواصل معك لتأكيد التفاصيل.'; }
-    if(submitButton) submitButton.textContent = 'تم إرسال الطلب ✓';
-    orderForm.reset();
-    packageInput.value = '';
-    packageButtons.forEach(function(button){
-      button.classList.remove('selected');
-      button.setAttribute('aria-pressed', 'false');
-    });
-    if(formMessage) formMessage.scrollIntoView({behavior:'smooth', block:'center'});
-    window.setTimeout(function(){ if(submitButton) submitButton.textContent = 'تأكيد الطلب / Confirm order'; }, 5000);
+
+    if(data.success === true){
+      if(formMessage) { formMessage.className = 'notice success'; formMessage.textContent = 'تم استلام طلبك بنجاح! سنتواصل معك لتأكيد التفاصيل.'; }
+      if(submitButton) submitButton.textContent = 'تم إرسال الطلب ✓';
+
+      if(!purchaseSentForOrder && typeof window.fbq === 'function'){
+        const selectedPackage = packageInput.value;
+        const purchaseValue = selectedPackage === '3-pack' ? 129 : 199;
+        window.fbq('track', 'Purchase', {
+          value: purchaseValue,
+          currency: 'SAR',
+          content_name: selectedPackage,
+          content_type: 'product'
+        });
+        purchaseSentForOrder = true;
+      }
+
+      orderForm.reset();
+      packageInput.value = '';
+      packageButtons.forEach(function(button){
+        button.classList.remove('selected');
+        button.setAttribute('aria-pressed', 'false');
+      });
+      if(formMessage) formMessage.scrollIntoView({behavior:'smooth', block:'center'});
+      window.setTimeout(function(){ if(submitButton) submitButton.textContent = 'تأكيد الطلب / Confirm order'; }, 5000);
+    } else {
+      if(formMessage) { formMessage.className = 'notice error'; formMessage.textContent = 'تعذر إرسال الطلب. يرجى المحاولة مرة أخرى.'; }
+    }
   });
 })();
 </script>
