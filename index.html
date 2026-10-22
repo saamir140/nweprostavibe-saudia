@@ -238,32 +238,34 @@ body{padding-bottom:72px}
       formMessage.className = 'notice pending';
       formMessage.textContent = 'جارٍ إرسال طلبك... يرجى الانتظار.';
     }
-  });
 
-  // Do not infer success from iframe load. The Apps Script must send a success message.
-  responseFrame.addEventListener('load', function(){
-    if(!orderSubmitting) return;
-    if(formMessage) {
-      formMessage.className = 'notice pending';
-      formMessage.textContent = 'تم إرسال الطلب إلى النظام. إذا لم تظهر رسالة التأكيد، يرجى التواصل مع الدعم لتأكيد الاستلام.';
-    }
-    const submitButton = orderForm.querySelector('button[type="submit"]');
-    if(submitButton) submitButton.disabled = false;
-    orderSubmitting = false;
+    // Do not report success just because the iframe navigated.
+    window.setTimeout(function(){
+      if(orderSubmitting){
+        orderSubmitting = false;
+        if(submitButton) submitButton.disabled = false;
+        if(formMessage){
+          formMessage.className = 'notice error';
+          formMessage.textContent = 'لم يصل تأكيد الطلب. قد يكون الطلب قد وصل بالفعل؛ يرجى التحقق قبل إعادة الإرسال.';
+        }
+      }
+    }, 10000);
   });
 
   window.addEventListener('message', function(event){
-    if(!responseFrame || event.source !== responseFrame.contentWindow) return;
-
+    // Apps Script HtmlService can use a nested sandboxed iframe, so the
+    // message source may not equal the form's iframe WindowProxy.
+    // Only accept our specific response type while an order is in progress.
     let data = event.data;
     if(typeof data === 'string'){
       try { data = JSON.parse(data); } catch (error) { return; }
     }
-    if(!data || data.type !== 'prostavibe-order-result') return;
+    if(!data || data.type !== 'prostavibe-order-result' || !orderSubmitting) return;
 
     const submitButton = orderForm.querySelector('button[type="submit"]');
+    orderSubmitting = false;
+
     if(data.success === true){
-      orderSubmitting = false;
       if(submitButton) {
         submitButton.disabled = false;
         submitButton.textContent = 'تم إرسال الطلب ✓';
@@ -294,12 +296,11 @@ body{padding-bottom:72px}
       window.setTimeout(function(){
         if(submitButton) submitButton.textContent = 'تأكيد الطلب / Confirm order';
       }, 5000);
-    } else if(data.success === false) {
-      orderSubmitting = false;
+    } else if(data.success === false){
       if(submitButton) submitButton.disabled = false;
       if(formMessage) {
         formMessage.className = 'notice error';
-        formMessage.textContent = 'تعذر إرسال الطلب. يرجى المحاولة مرة أخرى.';
+        formMessage.textContent = 'تعذر إرسال الطلب: ' + (data.error || 'يرجى المحاولة مرة أخرى.');
       }
     }
   });
