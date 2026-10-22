@@ -253,14 +253,14 @@ body{padding-bottom:72px}
   });
 
   window.addEventListener('message', function(event){
-    // Messages must come from the hidden iframe used by this form.
-    if(!responseFrame || event.source !== responseFrame.contentWindow) return;
-
+    // Apps Script HtmlService can use a nested sandboxed iframe, so the
+    // message source may not equal the form's iframe WindowProxy.
+    // Only accept our specific response type while an order is in progress.
     let data = event.data;
     if(typeof data === 'string'){
       try { data = JSON.parse(data); } catch (error) { return; }
     }
-    if(!data || data.type !== 'prostavibe-order-result') return;
+    if(!data || data.type !== 'prostavibe-order-result' || !orderSubmitting) return;
 
     const submitButton = orderForm.querySelector('button[type="submit"]');
     orderSubmitting = false;
