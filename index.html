@@ -158,7 +158,7 @@ body{padding-bottom:72px}
     <h3>باقة 5 قطع</h3><div class="price">199 SAR</div>
   </button>
 </div>
-<form id="orderForm">
+<form id="orderForm" action="https://script.google.com/macros/s/AKfycbyS1ZXMn-7ijV2bYZ9Y425GIBfE--Ho1FAhUv4_JUCVtbn5sPR_hOkxNXwv1la9IFELcQ/exec" method="POST" target="orderResponseFrame">
   <div class="formgrid">
     <input name="name" placeholder="الاسم الكامل / Full name" autocomplete="name" required>
     <input name="phone" type="tel" placeholder="رقم الهاتف / Phone number" autocomplete="tel" required>
@@ -169,6 +169,7 @@ body{padding-bottom:72px}
   </div>
   <p class="notice" id="formMessage">اختر الباقة ثم أدخل بيانات التوصيل.</p>
 </form>
+<iframe name="orderResponseFrame" id="orderResponseFrame" title="Order submission response" style="display:none;width:0;height:0;border:0" aria-hidden="true"></iframe>
 </section></main>
 <footer class="wrap">اقرأ ملصق المنتج وتعليمات الشركة المصنّعة قبل الاستخدام. الصور التوضيحية لا تثبت فعالية طبية.</footer>
 <script>
@@ -190,14 +191,35 @@ body{padding-bottom:72px}
   packageButtons.forEach(function(button){
     button.addEventListener('click', function(){ selectPackage(button.dataset.package); });
   });
-  document.getElementById('orderForm').addEventListener('submit', function(e){
-    e.preventDefault();
+  const orderForm = document.getElementById('orderForm');
+  const responseFrame = document.getElementById('orderResponseFrame');
+  let orderSubmitting = false;
+
+  orderForm.addEventListener('submit', function(e){
     if(!packageInput.value){
+      e.preventDefault();
       if(formMessage) formMessage.textContent = 'يرجى اختيار الباقة أولاً.';
       document.getElementById('packages').scrollIntoView({behavior:'smooth'});
       return;
     }
-    if(formMessage) formMessage.textContent = 'نظام استقبال الطلبات يحتاج إلى ربطه بخدمة الطلبات قبل إرسال الطلب.';
+    orderSubmitting = true;
+    const submitButton = orderForm.querySelector('button[type="submit"]');
+    if(submitButton) submitButton.disabled = true;
+    if(formMessage) formMessage.textContent = 'جارٍ إرسال طلبك... يرجى الانتظار.';
+  });
+
+  responseFrame.addEventListener('load', function(){
+    if(!orderSubmitting) return;
+    orderSubmitting = false;
+    const submitButton = orderForm.querySelector('button[type="submit"]');
+    if(submitButton) submitButton.disabled = false;
+    if(formMessage) formMessage.textContent = 'تم إرسال الطلب إلى نظام الاستقبال. يرجى التحقق من جدول Orders للتأكد من تسجيله.';
+    orderForm.reset();
+    packageInput.value = '';
+    packageButtons.forEach(function(button){
+      button.classList.remove('selected');
+      button.setAttribute('aria-pressed', 'false');
+    });
   });
 })();
 </script>
