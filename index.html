@@ -28,6 +28,16 @@ body{margin:0;background:var(--bg);color:var(--cream);font-family:Arial,Tahoma,s
 .pharmacy p{color:var(--muted);margin:8px 0}
 footer{text-align:center;color:#9d9e96;font-size:12px;padding:20px 0 35px}
 @media(max-width:560px){.packages,.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.order{padding:22px 14px}.media video,.media img{border-radius:10px;margin-bottom:12px}}
+
+.package-choice{font:inherit;cursor:pointer;color:#171713;transition:transform .15s,border-color .15s,box-shadow .15s}
+.package-choice:hover{transform:translateY(-2px)}
+.package-choice.selected{border:3px solid #8a6417;box-shadow:0 0 0 3px rgba(213,173,84,.24);background:#fff8e8}
+.package-choice h3{font-size:20px}
+.video-order-cta{display:block;width:100%;margin:-2px 0 20px;background:var(--gold);color:#171713;text-align:center;text-decoration:none;font-weight:900;font-size:18px;padding:14px;border-radius:12px}
+.sticky-cta{position:fixed;z-index:9999;bottom:12px;left:4%;right:4%;width:92%;max-width:920px;margin:auto;display:block;text-align:center;text-decoration:none;background:var(--gold);color:#171713;border:1px solid #f3d68b;border-radius:999px;padding:12px 18px;font-weight:900;box-shadow:0 5px 22px rgba(0,0,0,.45)}
+body{padding-bottom:72px}
+@media(min-width:980px){.sticky-cta{left:calc((100% - 920px)/2);right:calc((100% - 920px)/2);width:920px}}
+
 </style>
 </head>
 <body>
@@ -36,6 +46,8 @@ footer{text-align:center;color:#9d9e96;font-size:12px;padding:20px 0 35px}
 <section class="media" aria-label="صور وفيديو المنتج">
 <video controls playsinline preload="metadata">
 <source src="WhatsApp%20Video%202026-10-07%20at%202.08.57%20PM%20(1).mp4" type="video/mp4">متصفحك لا يدعم تشغيل الفيديو.</video>
+<a class="video-order-cta" href="#packages">اطلب الآن / Order Now</a>
+
 
 <!-- Featured image displayed immediately below the video -->
 <img src="WhatsApp%20Image%202026-10-22%20at%2012.21.15%20AM.jpeg" alt="صورة توضيحية لمنتج ProstaVibe" loading="eager">
@@ -66,16 +78,58 @@ footer{text-align:center;color:#9d9e96;font-size:12px;padding:20px 0 35px}
 </section>
 
 <section class="order" id="packages">
-<h2>اختر الباقة المناسبة</h2><p>راجع السعر وتفاصيل الطلب قبل التأكيد.</p>
-<div class="packages"><div class="pack"><h3>باقة 3 قطع</h3><div class="price">129 SAR</div></div><div class="pack"><h3>باقة 5 قطع</h3><div class="price">199 SAR</div></div></div>
-<form id="orderForm"><div class="formgrid">
-<input name="name" placeholder="الاسم الكامل" autocomplete="name" required>
-<input name="phone" type="tel" placeholder="رقم الهاتف" autocomplete="tel" required>
-<input class="full" name="city" placeholder="المدينة" required>
-<select class="full" name="package" required><option value="">اختر الباقة</option><option value="3-pack">3 قطع — 129 SAR</option><option value="5-pack">5 قطع — 199 SAR</option></select>
-<button class="btn full" type="submit">تأكيد الطلب</button></div>
-<p class="notice" id="formMessage">نموذج الطلب سيُربط بجدول الطلبات في الخطوة التالية.</p></form>
+<h2>اختر الباقة المناسبة</h2>
+<p>راجع السعر وتفاصيل الطلب قبل التأكيد.</p>
+<div class="packages">
+  <button class="pack package-choice" type="button" data-package="3-pack" aria-pressed="false">
+    <h3>باقة 3 قطع</h3><div class="price">129 SAR</div>
+  </button>
+  <button class="pack package-choice" type="button" data-package="5-pack" aria-pressed="false">
+    <h3>باقة 5 قطع</h3><div class="price">199 SAR</div>
+  </button>
+</div>
+<form id="orderForm">
+  <div class="formgrid">
+    <input name="name" placeholder="الاسم الكامل / Full name" autocomplete="name" required>
+    <input name="phone" type="tel" placeholder="رقم الهاتف / Phone number" autocomplete="tel" required>
+    <input class="full" name="city" placeholder="المدينة / City" autocomplete="address-level2" required>
+    <input class="full" name="address" placeholder="العنوان بالتفصيل / Full address" autocomplete="street-address" required>
+    <input type="hidden" name="package" id="selectedPackage" required>
+    <button class="btn full" type="submit">تأكيد الطلب / Confirm order</button>
+  </div>
+  <p class="notice" id="formMessage">اختر الباقة ثم أدخل بيانات التوصيل.</p>
+</form>
 </section></main>
 <footer class="wrap">اقرأ ملصق المنتج وتعليمات الشركة المصنّعة قبل الاستخدام. الصور التوضيحية لا تثبت فعالية طبية.</footer>
-<script>document.getElementById("orderForm").addEventListener("submit",function(e){e.preventDefault();document.getElementById("formMessage").textContent="نظام استقبال الطلبات لم يتم ربطه بعد.";});</script>
+<script>
+(function(){
+  const packageButtons = document.querySelectorAll('.package-choice');
+  const packageInput = document.getElementById('selectedPackage');
+  const formMessage = document.getElementById('formMessage');
+  function selectPackage(value){
+    packageInput.value = value;
+    packageButtons.forEach(function(button){
+      const selected = button.dataset.package === value;
+      button.classList.toggle('selected', selected);
+      button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    });
+    if(formMessage) formMessage.textContent = value === '3-pack'
+      ? 'تم اختيار باقة 3 قطع — 129 SAR'
+      : 'تم اختيار باقة 5 قطع — 199 SAR';
+  }
+  packageButtons.forEach(function(button){
+    button.addEventListener('click', function(){ selectPackage(button.dataset.package); });
+  });
+  document.getElementById('orderForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!packageInput.value){
+      if(formMessage) formMessage.textContent = 'يرجى اختيار الباقة أولاً.';
+      document.getElementById('packages').scrollIntoView({behavior:'smooth'});
+      return;
+    }
+    if(formMessage) formMessage.textContent = 'نظام استقبال الطلبات يحتاج إلى ربطه بخدمة الطلبات قبل إرسال الطلب.';
+  });
+})();
+</script>
+<a class="sticky-cta" href="#packages">اطلب الآن / Order Now</a>
 </body></html>
