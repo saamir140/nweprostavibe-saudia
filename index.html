@@ -45,10 +45,17 @@ body{margin:0;background:var(--bg);color:var(--cream);font-family:Arial,Tahoma,s
 footer{text-align:center;color:#9d9e96;font-size:12px;padding:20px 0 35px}
 @media(max-width:560px){.packages,.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.order{padding:22px 14px}.media video,.media img{border-radius:10px;margin-bottom:12px}}
 
-.package-choice{font:inherit;cursor:pointer;color:#171713;transition:transform .15s,border-color .15s,box-shadow .15s}
+.package-choice{font:inherit;cursor:pointer;color:#171713;transition:transform .15s,border-color .15s,box-shadow .15s;position:relative;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
 .package-choice:hover{transform:translateY(-2px)}
 .package-choice.selected{border:3px solid #8a6417;box-shadow:0 0 0 3px rgba(213,173,84,.24);background:#fff8e8}
 .package-choice h3{font-size:20px}
+.pack-units{font-size:13px;color:#625744}
+.pack-unit-price{font-size:14px;color:#5c5548;border-top:1px solid #ead8ae;padding-top:7px;margin-top:4px;width:100%}
+.pack-unit-price strong{color:#8a6417}
+.pack-value{display:inline-block;background:#8a6417;color:#fff8e8;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800;margin-bottom:2px}
+.pack-savings{font-size:12px;font-weight:800;color:#17623a;background:#e5f5e9;border-radius:7px;padding:4px 8px;margin-top:3px}
+.pack-compare-note{margin:-8px 0 18px;text-align:center;color:#56534b;font-size:13px;line-height:1.6}
+@media(max-width:560px){.package-choice{min-height:165px}}
 .video-order-cta{display:block;width:100%;margin:-2px 0 20px;background:var(--gold);color:#171713;text-align:center;text-decoration:none;font-weight:900;font-size:18px;padding:14px;border-radius:12px}
 .sticky-cta{position:fixed;z-index:9999;bottom:12px;left:4%;right:4%;width:92%;max-width:920px;margin:auto;display:block;text-align:center;text-decoration:none;background:var(--gold);color:#171713;border:1px solid #f3d68b;border-radius:999px;padding:12px 18px;font-weight:900;box-shadow:0 5px 22px rgba(0,0,0,.45)}
 body{padding-bottom:72px}
@@ -172,12 +179,23 @@ body{padding-bottom:72px}
 <p>راجع السعر وتفاصيل الطلب قبل التأكيد.</p>
 <div class="packages">
   <button class="pack package-choice" type="button" data-package="3-pack" aria-pressed="false">
-    <h3>باقة 3 قطع</h3><div class="price">129 SAR</div>
+    <span class="pack-value" style="background:#5c5548">سعر إجمالي أقل</span>
+    <h3>باقة 3 قطع</h3>
+    <div class="pack-units">3 قطع في العبوة</div>
+    <div class="price">129 SAR</div>
+    <div class="pack-unit-price">سعر القطعة الواحدة: <strong>43 SAR</strong></div>
+    <div class="pack-savings" style="background:#f4ead5;color:#75551b">ادفع أقل الآن — 129 SAR فقط</div>
   </button>
   <button class="pack package-choice" type="button" data-package="5-pack" aria-pressed="false">
-    <h3>باقة 5 قطع</h3><div class="price">199 SAR</div>
+    <span class="pack-value">توفير أكبر لكل قطعة</span>
+    <h3>باقة 5 قطع</h3>
+    <div class="pack-units">5 قطع في العبوة</div>
+    <div class="price">199 SAR</div>
+    <div class="pack-unit-price">سعر القطعة الواحدة: <strong>39.80 SAR</strong></div>
+    <div class="pack-savings">وفّر 16 SAR مقارنةً بشراء 5 قطع بسعر باقة 3 قطع</div>
   </button>
 </div>
+<p class="pack-compare-note">اختر باقة 3 قطع إذا كنت تفضّل دفع مبلغ أقل الآن، أو باقة 5 قطع إذا كانت أولويتك الحصول على سعر أقل لكل قطعة.</p>
 <form id="orderForm" action="https://script.google.com/macros/s/AKfycbyS1ZXMn-7ijV2bYZ9Y425GIBfE--Ho1FAhUv4_JUCVtbn5sPR_hOkxNXwv1la9IFELcQ/exec" method="POST" target="orderResponseFrame">
   <div class="formgrid">
     <input name="name" placeholder="الاسم الكامل / Full name" autocomplete="name" required>
