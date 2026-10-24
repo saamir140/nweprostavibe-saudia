@@ -45,10 +45,17 @@ body{margin:0;background:var(--bg);color:var(--cream);font-family:Arial,Tahoma,s
 footer{text-align:center;color:#9d9e96;font-size:12px;padding:20px 0 35px}
 @media(max-width:560px){.packages,.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.order{padding:22px 14px}.media video,.media img{border-radius:10px;margin-bottom:12px}}
 
-.package-choice{font:inherit;cursor:pointer;color:#171713;transition:transform .15s,border-color .15s,box-shadow .15s}
+.package-choice{font:inherit;cursor:pointer;color:#171713;transition:transform .15s,border-color .15s,box-shadow .15s;position:relative;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
 .package-choice:hover{transform:translateY(-2px)}
 .package-choice.selected{border:3px solid #8a6417;box-shadow:0 0 0 3px rgba(213,173,84,.24);background:#fff8e8}
 .package-choice h3{font-size:20px}
+.pack-units{font-size:13px;color:#625744}
+.pack-unit-price{font-size:14px;color:#5c5548;border-top:1px solid #ead8ae;padding-top:7px;margin-top:4px;width:100%}
+.pack-unit-price strong{color:#8a6417}
+.pack-value{display:inline-block;background:#8a6417;color:#fff8e8;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800;margin-bottom:2px}
+.pack-savings{font-size:12px;font-weight:800;color:#17623a;background:#e5f5e9;border-radius:7px;padding:4px 8px;margin-top:3px}
+.pack-compare-note{margin:-8px 0 18px;text-align:center;color:#56534b;font-size:13px;line-height:1.6}
+@media(max-width:560px){.package-choice{min-height:165px}}
 .video-order-cta{display:block;width:100%;margin:-2px 0 20px;background:var(--gold);color:#171713;text-align:center;text-decoration:none;font-weight:900;font-size:18px;padding:14px;border-radius:12px}
 .sticky-cta{position:fixed;z-index:9999;bottom:12px;left:4%;right:4%;width:92%;max-width:920px;margin:auto;display:block;text-align:center;text-decoration:none;background:var(--gold);color:#171713;border:1px solid #f3d68b;border-radius:999px;padding:12px 18px;font-weight:900;box-shadow:0 5px 22px rgba(0,0,0,.45)}
 body{padding-bottom:72px}
@@ -60,6 +67,10 @@ body{padding-bottom:72px}
 <header class="top wrap"><div class="brand">PROSTAVIBE</div><p class="subtitle">تعرّف على المنتج ومعلومات العبوة قبل الطلب</p></header>
 <main class="wrap">
 <section class="media" aria-label="صور وفيديو المنتج">
+<!-- New top hero image: filename must match the GitHub repository exactly -->
+<img src="./f399d6a2-f43b-4a92-9b0f-0aa20355bb69.png" alt="ProstaVibe product hero image" loading="eager" fetchpriority="high" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid #40331d;background:#080a09;margin:0 0 18px;">
+
+
 <video controls playsinline preload="metadata">
 <source src="WhatsApp%20Video%202026-10-07%20at%202.08.57%20PM%20(1).mp4" type="video/mp4">متصفحك لا يدعم تشغيل الفيديو.</video>
 <a class="video-order-cta" href="#packages">اطلب الآن / Order Now</a>
@@ -87,6 +98,19 @@ body{padding-bottom:72px}
 <img src="ChatGPT%20Image%20Oct%2022%2C%202026%2C%2007_02_37%20AM.jpg" alt="صورة صيدلية" loading="lazy">
 <img src="ChatGPT%20Image%20Oct%2022%2C%202026%2C%2007_02_49%20AM.png" alt="عبوة المنتج" loading="lazy">
 <img src="ChatGPT%20Image%20Oct%2022%2C%202026%2C%2007_03_00%20AM.jpg" alt="صورة أخرى للمنتج" loading="lazy">
+</section>
+
+<!-- How-to-use visual: verify all steps against the actual product label before publishing -->
+<section class="how-to-use wrap" id="how-to-use" style="margin:28px auto;text-align:center">
+  <img
+    src="./282c6e30-c972-4c39-a329-b81e0f32dd66.png"
+    alt="طريقة استخدام ProstaVibe — إرشادات توضيحية"
+    loading="lazy"
+    style="display:block;width:100%;height:auto;border-radius:16px;border:1px solid #40331d;background:#f7f1e7"
+  >
+  <p style="color:#c9c6bc;font-size:12px;line-height:1.7;margin:10px 4px 0">
+    اتبع تعليمات الاستخدام والتحذيرات الموجودة على عبوة المنتج. هذه الصورة توضيحية، ويجب التحقق من الخطوات وفق ملصق الشركة المصنّعة قبل النشر.
+  </p>
 </section>
 
 <!-- Pharmacy section moved below ALL product images -->
@@ -172,12 +196,23 @@ body{padding-bottom:72px}
 <p>راجع السعر وتفاصيل الطلب قبل التأكيد.</p>
 <div class="packages">
   <button class="pack package-choice" type="button" data-package="3-pack" aria-pressed="false">
-    <h3>باقة 3 قطع</h3><div class="price">129 SAR</div>
+    <span class="pack-value" style="background:#5c5548">سعر إجمالي أقل</span>
+    <h3>باقة 3 قطع</h3>
+    <div class="pack-units">3 قطع في العبوة</div>
+    <div class="price">129 SAR</div>
+    <div class="pack-unit-price">سعر القطعة الواحدة: <strong>43 SAR</strong></div>
+    <div class="pack-savings" style="background:#f4ead5;color:#75551b">ادفع أقل الآن — 129 SAR فقط</div>
   </button>
   <button class="pack package-choice" type="button" data-package="5-pack" aria-pressed="false">
-    <h3>باقة 5 قطع</h3><div class="price">199 SAR</div>
+    <span class="pack-value">توفير أكبر لكل قطعة</span>
+    <h3>باقة 5 قطع</h3>
+    <div class="pack-units">5 قطع في العبوة</div>
+    <div class="price">199 SAR</div>
+    <div class="pack-unit-price">سعر القطعة الواحدة: <strong>39.80 SAR</strong></div>
+    <div class="pack-savings">وفّر 16 SAR مقارنةً بشراء 5 قطع بسعر باقة 3 قطع</div>
   </button>
 </div>
+<p class="pack-compare-note">اختر باقة 3 قطع إذا كنت تفضّل دفع مبلغ أقل الآن، أو باقة 5 قطع إذا كانت أولويتك الحصول على سعر أقل لكل قطعة.</p>
 <form id="orderForm" action="https://script.google.com/macros/s/AKfycbyS1ZXMn-7ijV2bYZ9Y425GIBfE--Ho1FAhUv4_JUCVtbn5sPR_hOkxNXwv1la9IFELcQ/exec" method="POST" target="orderResponseFrame">
   <div class="formgrid">
     <input name="name" placeholder="الاسم الكامل / Full name" autocomplete="name" required>
@@ -275,29 +310,15 @@ body{padding-bottom:72px}
         formMessage.textContent = 'تم استلام طلبك بنجاح! سنتواصل معك لتأكيد التفاصيل.';
       }
 
-      if(!purchaseSentForOrder){
+      if(!purchaseSentForOrder && typeof window.fbq === 'function'){
         const purchaseValue = selectedPackageAtSubmit === '3-pack' ? 129 : 199;
-        if(typeof window.fbq === 'function'){
-          console.info('[ProstaVibe Pixel] Successful order confirmed. Calling Purchase event.', {
-            value: purchaseValue,
-            currency: 'SAR',
-            package: selectedPackageAtSubmit
-          });
-          try {
-            window.fbq('track', 'Purchase', {
-              value: purchaseValue,
-              currency: 'SAR',
-              content_name: selectedPackageAtSubmit,
-              content_type: 'product'
-            });
-            purchaseSentForOrder = true;
-            console.info('[ProstaVibe Pixel] Purchase call handed to fbq. This does not itself confirm Meta received it.');
-          } catch(pixelError) {
-            console.error('[ProstaVibe Pixel] Purchase call threw an error:', pixelError);
-          }
-        } else {
-          console.error('[ProstaVibe Pixel] Order succeeded, but window.fbq is not available; Purchase was not called.');
-        }
+        window.fbq('track', 'Purchase', {
+          value: purchaseValue,
+          currency: 'SAR',
+          content_name: selectedPackageAtSubmit,
+          content_type: 'product'
+        });
+        purchaseSentForOrder = true;
       }
 
       orderForm.reset();
