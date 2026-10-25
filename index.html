@@ -216,7 +216,8 @@ body{padding-bottom:72px}
 <form id="orderForm" action="https://script.google.com/macros/s/AKfycbyS1ZXMn-7ijV2bYZ9Y425GIBfE--Ho1FAhUv4_JUCVtbn5sPR_hOkxNXwv1la9IFELcQ/exec" method="POST" target="orderResponseFrame">
   <div class="formgrid">
     <input name="name" placeholder="الاسم الكامل / Full name" autocomplete="name" required>
-    <input name="phone" type="tel" placeholder="رقم الهاتف / Phone number" autocomplete="tel" required>
+    <input name="phone" type="tel" placeholder="رقم الهاتف / Phone number (optional)" autocomplete="tel">
+    <input name="whatsapp" type="tel" placeholder="رقم واتساب / WhatsApp number (optional)" autocomplete="tel">
     <input class="full" name="city" placeholder="المدينة / City" autocomplete="address-level2" required>
     <input class="full" name="address" placeholder="العنوان بالتفصيل / Full address" autocomplete="street-address" required>
     <input type="hidden" name="package" id="selectedPackage" required>
@@ -249,10 +250,16 @@ body{padding-bottom:72px}
   const orderForm = document.getElementById('orderForm');
   const responseFrame = document.getElementById('orderResponseFrame');
   let orderSubmitting = false;
+  let orderCompleted = false;
   let purchaseSentForOrder = false;
   let selectedPackageAtSubmit = '';
 
   orderForm.addEventListener('submit', function(e){
+    if(orderCompleted || orderSubmitting){
+      e.preventDefault();
+      return;
+    }
+
     if(!packageInput.value){
       e.preventDefault();
       if(formMessage) {
@@ -260,6 +267,21 @@ body{padding-bottom:72px}
         formMessage.textContent = 'يرجى اختيار الباقة أولاً.';
       }
       document.getElementById('packages').scrollIntoView({behavior:'smooth'});
+      return;
+    }
+
+    const phoneInput = orderForm.querySelector('[name="phone"]');
+    const whatsappInput = orderForm.querySelector('[name="whatsapp"]');
+    const phoneValue = phoneInput ? phoneInput.value.trim() : '';
+    const whatsappValue = whatsappInput ? whatsappInput.value.trim() : '';
+
+    if(!phoneValue && !whatsappValue){
+      e.preventDefault();
+      if(formMessage) {
+        formMessage.className = 'notice error';
+        formMessage.textContent = 'يرجى إدخال رقم الهاتف أو رقم واتساب على الأقل.';
+      }
+      if(phoneInput) phoneInput.focus();
       return;
     }
 
@@ -301,8 +323,9 @@ body{padding-bottom:72px}
     orderSubmitting = false;
 
     if(data.success === true){
+      orderCompleted = true;
       if(submitButton) {
-        submitButton.disabled = false;
+        submitButton.disabled = true;
         submitButton.textContent = 'تم إرسال الطلب ✓';
       }
       if(formMessage) {
@@ -328,9 +351,8 @@ body{padding-bottom:72px}
         button.setAttribute('aria-pressed', 'false');
       });
       if(formMessage) formMessage.scrollIntoView({behavior:'smooth', block:'center'});
-      window.setTimeout(function(){
-        if(submitButton) submitButton.textContent = 'تأكيد الطلب / Confirm order';
-      }, 5000);
+      // Keep submission locked after success to reduce accidental duplicate orders.
+      // A page reload starts a fresh order session.
     } else if(data.success === false){
       if(submitButton) submitButton.disabled = false;
       if(formMessage) {
