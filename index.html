@@ -63,6 +63,21 @@ body{padding-bottom:72px}
 @media(min-width:980px){.sticky-cta{left:calc((100% - 920px)/2);right:calc((100% - 920px)/2);width:920px}}
 
 </style>
+
+<!-- WhatsApp welcome popup: isolated styles; existing page styling remains unchanged -->
+<style id="whatsapp-welcome-popup-styles">
+  .pv-wa-overlay{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.48)}
+  .pv-wa-popup{position:relative;width:min(400px,100%);background:#fff;color:#171717;border-radius:22px;padding:28px 20px 22px;text-align:center;direction:ltr;box-shadow:0 12px 40px rgba(0,0,0,.28);font-family:Arial,Tahoma,sans-serif;line-height:1.5}
+  .pv-wa-close{position:absolute;top:10px;right:10px;width:36px;height:36px;border:0;border-radius:50%;background:#f0f1f2;color:#333;font-size:23px;line-height:1;cursor:pointer}
+  .pv-wa-eyebrow{margin:3px 0 12px;color:#009b57;font-size:14px;font-weight:800;letter-spacing:2px}
+  .pv-wa-title{margin:0 auto 10px;max-width:310px;font-size:28px;line-height:1.25;font-weight:900;color:#171717}
+  .pv-wa-copy{margin:0 0 16px;color:#666;font-size:16px}
+  .pv-wa-number{display:block;margin:0 0 24px;color:#009b57;font-size:20px;font-weight:800;text-decoration:none}
+  .pv-wa-button{display:block;width:100%;padding:17px 14px;border-radius:999px;background:#20cf68;color:#fff;text-decoration:none;font-size:18px;font-weight:800}
+  .pv-wa-button:hover{background:#19bd5d}
+  @media(max-width:480px){.pv-wa-popup{padding:27px 18px 20px}.pv-wa-title{font-size:26px}}
+</style>
+
 </head>
 <body>
 <header class="top wrap"><div class="brand">PROSTAVIBE</div><p class="subtitle">تعرّف على المنتج ومعلومات العبوة قبل الطلب</p></header>
@@ -365,4 +380,28 @@ body{padding-bottom:72px}
 })();
 </script>
 <a class="sticky-cta" href="#packages">اطلب الآن / Order Now</a>
+
+<!-- WhatsApp welcome popup -->
+<div class="pv-wa-overlay" id="pvWhatsAppPopup" role="dialog" aria-modal="true" aria-labelledby="pvWaTitle">
+  <div class="pv-wa-popup">
+    <button class="pv-wa-close" id="pvWaClose" type="button" aria-label="Close popup">&times;</button>
+    <p class="pv-wa-eyebrow">CUSTOMER NOTICE</p>
+    <h2 class="pv-wa-title" id="pvWaTitle">Message us on WhatsApp</h2>
+    <p class="pv-wa-copy">Need help with your order? Chat with us now.</p>
+    <a class="pv-wa-number" href="https://wa.me/966597190251" target="_blank" rel="noopener">+966 59 719 0251</a>
+    <a class="pv-wa-button" href="https://wa.me/966597190251" target="_blank" rel="noopener">Open WhatsApp</a>
+  </div>
+</div>
+<script id="pvWhatsAppPopupScript">
+  (function(){
+    var popup = document.getElementById('pvWhatsAppPopup');
+    var closeButton = document.getElementById('pvWaClose');
+    if(!popup || !closeButton) return;
+    closeButton.addEventListener('click', function(){ popup.style.display = 'none'; });
+    popup.addEventListener('click', function(event){
+      if(event.target === popup) popup.style.display = 'none';
+    });
+  })();
+</script>
+
 </body></html>
