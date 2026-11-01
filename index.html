@@ -75,15 +75,38 @@ body{padding-bottom:72px}
   .pv-wa-number{display:block;margin:0 0 24px;color:#009b57;font-size:20px;font-weight:800;text-decoration:none}
   .pv-wa-button{display:block;width:100%;padding:17px 14px;border-radius:999px;background:#20cf68;color:#fff;text-decoration:none;font-size:18px;font-weight:800}
   .pv-wa-button:hover{background:#19bd5d}
-  .pv-wa-floating{position:fixed;left:34px;bottom:58px;z-index:99999;display:none;align-items:center;justify-content:center;width:68px;height:68px;border-radius:50%;background:#20cf68;border:3px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.35);text-decoration:none}
-  .pv-wa-floating svg{display:block;width:39px;height:39px;fill:#fff}
-  @keyframes pvWaAttention{
-    0%,100%{opacity:1;box-shadow:0 4px 16px rgba(0,0,0,.35),0 0 0 0 rgba(32,207,104,.55)}
-    50%{opacity:.72;box-shadow:0 4px 18px rgba(0,0,0,.35),0 0 0 11px rgba(32,207,104,0)}
+  /* Floating WhatsApp button: fixed to the viewport, clearly raised and visibly blinking */
+  body a#pvWaFloating.pv-wa-floating{
+    position:fixed !important;
+    left:30px !important;
+    right:auto !important;
+    bottom:110px !important;
+    top:auto !important;
+    z-index:2147483000 !important;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    width:68px;
+    height:68px;
+    border-radius:50%;
+    background:#20cf68;
+    border:3px solid #fff;
+    box-shadow:0 0 0 5px rgba(32,207,104,.28),0 5px 18px rgba(0,0,0,.45);
+    text-decoration:none;
+    animation:pvWaStrongBlink .85s steps(2,end) infinite !important;
+    transform:translateZ(0);
   }
-  .pv-wa-floating{animation:pvWaAttention 1.25s ease-in-out infinite}
-  @media(prefers-reduced-motion:reduce){.pv-wa-floating{animation:none}}
-  @media(max-width:480px){.pv-wa-popup{padding:27px 18px 20px}.pv-wa-title{font-size:26px}.pv-wa-floating{left:34px;bottom:58px;width:66px;height:66px}}
+  body a#pvWaFloating.pv-wa-floating svg{display:block;width:40px;height:40px;fill:#fff}
+  @keyframes pvWaStrongBlink{
+    0%,100%{opacity:1;filter:brightness(1);box-shadow:0 0 0 5px rgba(32,207,104,.35),0 5px 18px rgba(0,0,0,.45);transform:scale(1)}
+    50%{opacity:.35;filter:brightness(1.5);box-shadow:0 0 0 13px rgba(32,207,104,0);transform:scale(.94)}
+  }
+  @media(max-width:480px){
+    body a#pvWaFloating.pv-wa-floating{left:30px !important;bottom:110px !important;width:68px;height:68px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    body a#pvWaFloating.pv-wa-floating{animation:none !important}
+  }
 </style>
 
 </head>
