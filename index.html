@@ -395,20 +395,22 @@ body{padding-bottom:72px}
   </div>
 </div>
 <script id="pvWhatsAppPopupScript">
-  (function(){
+  document.addEventListener('DOMContentLoaded', function(){
     var popup = document.getElementById('pvWhatsAppPopup');
     var closeButton = document.getElementById('pvWaClose');
     var floatingButton = document.getElementById('pvWaFloating');
     if(!popup || !closeButton || !floatingButton) return;
+
     function closePopup(){
       popup.style.display = 'none';
       floatingButton.style.display = 'flex';
     }
+
     closeButton.addEventListener('click', closePopup);
     popup.addEventListener('click', function(event){
       if(event.target === popup) closePopup();
     });
-  })();
+  });
 </script>
 
 
