@@ -246,17 +246,17 @@ body{padding-bottom:72px}
     <span class="pack-value" style="background:#5c5548">سعر إجمالي أقل</span>
     <h3>باقة 3 قطع</h3>
     <div class="pack-units">3 قطع في العبوة</div>
-    <div class="price">129 SAR</div>
-    <div class="pack-unit-price">سعر القطعة الواحدة: <strong>43 SAR</strong></div>
-    <div class="pack-savings" style="background:#f4ead5;color:#75551b">ادفع أقل الآن — 129 SAR فقط</div>
+    <div class="price">99 SAR</div>
+    <div class="pack-unit-price">سعر القطعة الواحدة: <strong>33 SAR</strong></div>
+    <div class="pack-savings" style="background:#f4ead5;color:#75551b">ادفع أقل الآن — 99 SAR فقط</div>
   </button>
   <button class="pack package-choice" type="button" data-package="5-pack" aria-pressed="false">
     <span class="pack-value">توفير أكبر لكل قطعة</span>
     <h3>باقة 5 قطع</h3>
     <div class="pack-units">5 قطع في العبوة</div>
-    <div class="price">199 SAR</div>
-    <div class="pack-unit-price">سعر القطعة الواحدة: <strong>39.80 SAR</strong></div>
-    <div class="pack-savings">وفّر 16 SAR مقارنةً بشراء 5 قطع بسعر باقة 3 قطع</div>
+    <div class="price">145 SAR</div>
+    <div class="pack-unit-price">سعر القطعة الواحدة: <strong>29 SAR</strong></div>
+    <div class="pack-savings">وفّر 20 SAR مقارنةً بشراء 5 قطع بسعر باقة 3 قطع</div>
   </button>
 </div>
 <p class="pack-compare-note">اختر باقة 3 قطع إذا كنت تفضّل دفع مبلغ أقل الآن، أو باقة 5 قطع إذا كانت أولويتك الحصول على سعر أقل لكل قطعة.</p>
@@ -288,8 +288,8 @@ body{padding-bottom:72px}
       button.setAttribute('aria-pressed', selected ? 'true' : 'false');
     });
     if(formMessage) { formMessage.className = 'notice'; formMessage.textContent = value === '3-pack'
-      ? 'تم اختيار باقة 3 قطع — 129 SAR'
-      : 'تم اختيار باقة 5 قطع — 199 SAR'; }
+      ? 'تم اختيار باقة 3 قطع — 99 SAR'
+      : 'تم اختيار باقة 5 قطع — 145 SAR'; }
   }
   packageButtons.forEach(function(button){
     button.addEventListener('click', function(){ selectPackage(button.dataset.package); });
@@ -381,7 +381,7 @@ body{padding-bottom:72px}
       }
 
       if(!purchaseSentForOrder && typeof window.fbq === 'function'){
-        const purchaseValue = selectedPackageAtSubmit === '3-pack' ? 129 : 199;
+        const purchaseValue = selectedPackageAtSubmit === '3-pack' ? 99 : 145;
         window.fbq('track', 'Purchase', {
           value: purchaseValue,
           currency: 'SAR',
@@ -452,3 +452,5 @@ body{padding-bottom:72px}
   </svg>
 </a>
 </body></html>
+
+       
